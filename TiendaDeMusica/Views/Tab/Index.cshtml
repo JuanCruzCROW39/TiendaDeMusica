@@ -1,0 +1,108 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Tab</h2>
+@(Html.EJ().Tab("Musica")
+           .HeightAdjustMode(HeightAdjustMode.Content)
+           .ClientSideEvents(e => e.BeforeActive("before").Create("c").ItemActive("i"))
+           .Items(data =>
+           {
+           data.Add().ID("Albums").Text("Albums").ContentTemplate(@<div id="Album"></div>);
+                   data.Add().ID("Artistas").Text("Artistas").ContentTemplate(@<div id="Artista"></div>);
+                       data.Add().ID("Generos").Text("Generos").ContentTemplate(@<div id="Genero"></div>);
+                }))
+<script type="text/javascript">
+        function begin(args) {
+        if(args.requestType=="save")
+            this.element.ejWaitingPopup("show");
+        }
+        function endEdit(args) {
+            this.element.ejWaitingPopup("hide");
+
+        }
+    function endAdd(args) {
+
+        this.element.ejWaitingPopup("hide");
+
+        }
+    function complete(args) {
+            if (args.requestType == "cancel")
+                this.element.ejWaitingPopup("hide");
+        if (args.requestType == "save") {
+            this.refreshContent();
+            
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    var genData, ArtData, URL, ID;
+    function c(args) {
+        $.ajax({
+            url: "/Tab/GetAlbum",
+            success: function (doc) {
+                $("#Album").html(doc);
+                //alert(doc);
+            }
+        });
+    }
+
+    function i(args) {
+        if (args.activeIndex == 0) {  // based on activeIndex set the url and ID
+            URL = "/Tab/GetAlbum";
+            ID = "Album";
+        }
+        if (args.activeIndex == 1) {
+            URL = "/Tab/GetArtista";
+            ID = "Artista";
+        }
+        if (args.activeIndex == 2) {
+            URL = "/Tab/GetGenero";
+            ID = "Genero";
+        }
+        $.ajax({
+            url: URL,
+            success: function (doc) {
+                $("#" + ID).html(doc);            // render Grid using partial view method
+                alert(ID + " " + URL + " " + doc);                
+            }
+        });
+    }    
+</script>
+
+@*<script type="text/javascript">
+    var genData, ArtData, URL;
+    $("#Musica").ejTab({
+        create: function (args) {    // bind intial Grid (tab1) using create for first time alone
+            $.ajax({
+                url: "/Tab/GetAlbum",
+                success: function (doc) {
+                    $("#Album").html(doc);
+                }
+            });
+        },
+        itemActive: function (args) {
+            if (args.activeIndex == 0) {  // based on activeIndex set the url and ID
+                URL = "/Tab/GetAlbum";
+                ID = "Album";
+            }
+            if (args.activeIndex == 1) {
+                URL = "/Tab/GetArtista";
+                ID = "Artsista";
+            }
+            if (args.activeIndex == 2) {
+                URL = "/Tab/GetGenero";
+                ID = "Genero";
+            }
+            $.ajax({
+                url: URL,
+                success: function (doc) {
+                    $("#" + ID).html(doc);            // render Grid using partial view method
+                }
+            });
+        }
+    });
+</script>*@
+

@@ -1,0 +1,157 @@
+﻿@using TiendaDeMusica.Models
+@model IEnumerable<Empleado>
+@{
+    ViewBag.Title = "ListaEmpleados";
+}
+
+<h2>Lista de Empleados</h2>
+@(Html.EJ().Grid<Empleado>("GridEmpleado")
+        .Datasource(Model)
+        .Locale("es-ES")
+        .EditSettings(e => { e.AllowAdding(false).AllowDeleting(false).AllowEditing(false).ShowAddNewRow(false); })
+        .ToolbarSettings(t =>
+        {
+            t.ShowToolbar().ToolbarItems(i =>
+            {
+                i.AddTool(ToolBarItems.ExcelExport);
+                i.AddTool(ToolBarItems.WordExport);
+            });
+        })
+        .AllowFiltering()
+        .AllowPaging()
+        .AllowReordering()
+        .AllowResizeToFit()
+        .Columns(c =>
+        {
+            c.Field(model => model.EmpleadoId).HeaderText("Id").Add();
+            c.Field(model => model.Nombre).Add();
+            c.Field(model => model.Apellidos).Add();
+            c.Field(model => model.Edad).Add();
+            c.Field(model => model.Direccion).Add();
+            c.Field(model => model.DepartamentoId).ForeignKeyField("DepartamentoId").ForeignKeyValue("Nombre").DataSource((IEnumerable<Departamento>)ViewBag.Departamentos).Add();
+            c.Field(model => model.Externo).DisplayAsCheckbox().Add();
+            c.Field(model => model.CURP).Add();
+            c.Field(model => model.RFC).Add();
+            c.Field(model => model.Telefono).Add();
+            c.Field(model => model.Email).Add();
+            c.Field(model => model.FechaDeNacimiento).HeaderText("Fecha de nacimiento").Add();
+            c.Field(model => model.SexoId).HeaderText("Sexo").ForeignKeyField("SexoId").ForeignKeyValue("Nombre").DataSource((IEnumerable<Sexo>)ViewBag.Sexo).Add();
+            c.Field(model => model.EstadoCivilId).HeaderText("Estado Civil").ForeignKeyField("EstadoCivilId").ForeignKeyValue("Nombre").DataSource((IEnumerable<EstadoCivil>)ViewBag.EstadoCivil).Add();
+        })
+)
+
+@*@(Html.EJ().Grid<object>("EmpleadoGrid")
+                .Datasource(ds => ds.URL(Url.Action("DataEmpleado", "Empleado", null, Request.Url.Scheme))
+                    .UpdateURL(Url.Action("UpdateEmpleado", "Empleado", null, Request.Url.Scheme))
+                    .RemoveURL(Url.Action("RemoveEmpleado", "Empleado", null, Request.Url.Scheme))
+                    .Adaptor(AdaptorType.UrlAdaptor))
+                .EditSettings(es =>
+                {
+                    es.AllowDeleting()
+                    .AllowEditing()
+                    .RowPosition(RowPosition.Bottom)
+                    .EditMode(EditMode.ExternalForm)
+                    .FormPosition(FormPosition.BottomLeft);
+                })
+                .Locale("es-ES")
+                .ToolbarSettings(tool =>
+                {
+                    tool.ShowToolbar().ToolbarItems(item =>
+                    {
+                        item.AddTool(ToolBarItems.Edit);
+                        item.AddTool(ToolBarItems.Update);
+                        item.AddTool(ToolBarItems.Cancel);
+                        item.AddTool(ToolBarItems.Delete);
+                        item.AddTool(ToolBarItems.ExcelExport);
+                        item.AddTool(ToolBarItems.WordExport);
+                    });
+                })
+                .Mappers(mapper =>
+                {
+                    mapper.ExportToExcelAction("/Empleado/ExcelEmpleado")
+                    .ExportToWordAction("/Empleado/WordEmpleado");
+                })
+                .AllowFiltering()
+                .AllowPaging()
+                .PageSettings(ps =>
+                {
+                    ps.PageSize(20);
+                })
+                .AllowReordering()
+                .AllowResizeToFit()
+                .Columns(c =>
+                {
+                    c.Field("EmpleadoId").HeaderText("ID").IsPrimaryKey(true).IsIdentity(true).Add();
+                    c.Field("Nombre").ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'Escriba su nombre'}")).Add();
+                    c.Field("Apellidos").ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'Escriba sus apellidos´}")).Add();
+                    c.Field("Edad").EditType(EditingType.NumericEdit)
+                        .ValidationRules(v => v.AddRule("range", "[18,90]").AddRule("messages", "{range:'Ingrese una edad entre 18 y 90 años´")
+                        .AddRule("required", true).AddRule("messages", "{required:'Ingrese su edad'}")).Add();
+                    c.Field("Direccion").ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'Campo obligatorio'}")).Add();
+                    c.Field("DepartamentoId").HeaderText("Departamento")
+                        .ForeignKeyField("DepartamentoId").ForeignKeyValue("Nombre").DataSource((IEnumerable<object>)ViewBag.Departamentos)
+                        .ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'Campo obligatorio'}")).Add();
+                    c.Field("Externo").HeaderText("¿Es externo?").EditType(EditingType.BooleanEdit).Add();
+                    c.Field("CURP")
+                        .ValidationRules(v => v.AddRule("RegexCURP", @"^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$")
+                        .AddRule("required", true).AddRule("messages", "{required:'Campo obligatorio'}")).Add();
+                    c.Field("RFC")
+                        .ValidationRules(v => v.AddRule("RegexRFC", @"^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$")
+                        .AddRule("required", true).AddRule("messages", "{required:'Campo obligatorio'}")).Add();
+                    c.Field("Telefono").ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'Campo obligatorio'}")).Add();
+                    c.Field("Email").HeaderText("Correo electronico")
+                        .ValidationRules(v => v.AddRule("RegexEmail", @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$").AddRule("required", true)
+                        .AddRule("messages", "{required:'Campo obligatorio'}")).Add();
+                    c.Field("FechaDeNacimiento").HeaderText("Fecha de nacimiento").EditType(EditingType.DateTimePicker)
+                        .ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'Campo obligatorio'}")).Add();
+                    c.Field("SexoId").HeaderText("Sexo")
+                        .ForeignKeyField("SexoId").ForeignKeyValue("Nombre").DataSource((IEnumerable<object>)ViewBag.Sexo)
+                        .ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'Campo obligatorio'}")).Add();
+                    c.Field("EstadoCivilId").HeaderText("Estado Civil")
+                        .ForeignKeyField("EstadoCivilId").ForeignKeyValue("Nombre").DataSource((IEnumerable<object>)ViewBag.EstadoCivil)
+                        .ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'Campo obligatorio'}")).Add();
+                })
+    )
+    @*<div>
+            <a href="@Url.Action("Index")" class="btn btn-primary btn-lg">Ir a index</a>
+        </div>*@
+<script src="@Url.Content("~/Scripts/ej/i18n/ej.culture.es-ES.min.js")"></script>
+<script src="@Url.Content("~/Scripts/ej/l10n/ej.localetexts.es-ES.min.js")"></script>
+
+@*<script type="text/javascript">
+    function begin(args) {
+        if (args.requestType == "save") {
+            this.element.ejWaitingPopup("show");
+        }
+
+    }
+    function endEdit(args) {
+        this.element.ejWaitingPopup("hide");
+
+    }
+    function complete(args) {
+        if (args.requestType == "cancel")
+            this.element.ejWaitingPopup("hide");
+        if (args.requestType == "save")
+            this.refreshContent();
+    }
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        $.validator.addMethod("RegexCURP", function (value, element, params) {
+            var re = new RegExp(params);
+            return this.optional(element) || re.test(value);
+        }, "Inserte un CURP válido");
+
+        $.validator.addMethod("RegexRFC", function (value, element, params) {
+            var re = new RegExp(params);
+            return this.optional(element) || re.test(value);
+        }, "Inserte un RFC válido");
+
+        $.validator.addMethod("RegexEmail", function (value, element, params) {
+            var re = new RegExp(params);
+            return this.optional(element) || re.test(value);
+        }, "Inserte un correo electronico válido");
+    })
+</script>*@

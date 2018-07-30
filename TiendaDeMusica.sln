@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TiendaDeMusica", "TiendaDeMusica\TiendaDeMusica.csproj", "{768FFC09-7E41-47BD-9423-BABF0E5E024E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TiendaDeMusica.Tests", "TiendaDeMusica.Tests\TiendaDeMusica.Tests.csproj", "{ECBEF2C5-A2DA-4897-8FE4-682D1B2F0029}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{768FFC09-7E41-47BD-9423-BABF0E5E024E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{768FFC09-7E41-47BD-9423-BABF0E5E024E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{768FFC09-7E41-47BD-9423-BABF0E5E024E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{768FFC09-7E41-47BD-9423-BABF0E5E024E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECBEF2C5-A2DA-4897-8FE4-682D1B2F0029}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECBEF2C5-A2DA-4897-8FE4-682D1B2F0029}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECBEF2C5-A2DA-4897-8FE4-682D1B2F0029}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECBEF2C5-A2DA-4897-8FE4-682D1B2F0029}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		VisualSVNWorkingCopyRoot = .
+		SolutionGuid = {30D8CF06-B3A5-4494-9E98-3E3D793BDD17}
+	EndGlobalSection
+EndGlobal

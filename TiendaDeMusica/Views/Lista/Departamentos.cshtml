@@ -1,0 +1,19 @@
+﻿@using TiendaDeMusica.Models
+@model IEnumerable<Departamento>
+
+@{
+    ViewBag.Title = "Departamentos";
+}
+
+<h2>Departamentos</h2>
+@(Html.EJ().Grid<Departamento>("GridDepartamento")
+    .Datasource(Model)
+    .AllowPaging()
+    .AllowSorting()
+    .AllowResizeToFit()
+    .Columns(c=>
+    {
+        c.Field(model => model.DepartamentoId).HeaderText("ID").Add();
+        c.Field(model => model.Nombre).Add();
+    })
+    )

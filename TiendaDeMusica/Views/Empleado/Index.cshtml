@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index Empleados</h2>
+
+<div>
+    @ViewBag.Registros empleados registrados
+</div>
+
+<div>
+    <a href="@Url.Action("Create")" class="btn btn-primary btn-lg">Crear</a>
+</div>
+
+<div>
+    <a href="@Url.Action("Index","Lista")" class=" btn btn-primary btn-lg">Lista</a>
+</div>
+
+

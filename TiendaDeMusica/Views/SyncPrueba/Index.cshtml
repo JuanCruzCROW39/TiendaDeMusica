@@ -1,0 +1,67 @@
+﻿@using TiendaDeMusica.Models
+@model IEnumerable<Album>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Discos disponbles</h2>
+
+@(Html.EJ().Grid<Album>("FlatGrid")
+    .Datasource(data => data.Json(Model).InsertURL("/SyncPrueba/Create").UpdateURL("/SyncPrueba/Update").RemoveURL("/SyncPrueba/Delete").Adaptor(AdaptorType.RemoteSaveAdaptor))
+    .EditSettings(edit => { edit.AllowAdding().AllowDeleting().AllowEditing().RowPosition(RowPosition.Bottom).EditMode(EditMode.InlineForm); })
+    .AllowResizeToFit()
+    .ToolbarSettings(t =>
+    {
+        t.ShowToolbar().ToolbarItems(i =>
+        {
+            i.AddTool(ToolBarItems.Add);
+            i.AddTool(ToolBarItems.Cancel);
+            i.AddTool(ToolBarItems.Delete);
+            i.AddTool(ToolBarItems.Edit);
+            i.AddTool(ToolBarItems.Update);
+        });
+    })
+    .AllowPaging()
+    .PageSettings(p => { p.PageSize(5); })
+    .AllowSorting()
+    .Columns(c =>
+    {
+        c.Field(m => m.AlbumId).HeaderText("Album ID").ValidationRules(v => v.AddRule("required", true)).IsPrimaryKey(true).IsIdentity(true).Add();
+        c.Field(m => m.Titulo).Add();
+        c.Field(m => m.ArtistaId).HeaderText("Artista").ForeignKeyField("ArtistaId").ForeignKeyValue("Nombre").DataSource((IEnumerable<object>)ViewBag.DataSourceArtista).Add();
+        c.Field(m => m.GeneroId).HeaderText("Genero").ForeignKeyField("GeneroId").ForeignKeyValue("Nombre").DataSource((IEnumerable<object>)ViewBag.DataSourceGenero).Add();
+        //c.Field(m => m.Artista.Nombre).HeaderText("Artista").Add();
+        //c.Field(m => m.Genero.Nombre).HeaderText("Genero").Add();
+        c.Field(m => m.Precio).Format("{0:C2}").EditType(EditingType.NumericEdit).Add();
+        c.Field(m => m.AlbumArtURL).Add();
+
+    })
+    .ClientSideEvents(e => { e.ActionComplete("complete").ActionBegin("begin").EndEdit("endEdit").EndAdd("endAdd").DataBound("dataBound"); })
+    )
+<script type="text/javascript">
+    function begin(args) {
+        if (args.requestType == "save")
+            this.element.ejWaitingPopup("show");
+    }
+    function endEdit(args) {
+        this.element.ejWaitingPopup("hide");
+    }
+    function endAdd(args) {
+
+        this.element.ejWaitingPopup("hide");
+    }
+    function complete(args) {
+        if (args.requestType == "cancel")
+            this.element.ejWaitingPopup("hide");
+        if (args.requestType == "save")
+            this.refreshContent();
+    }
+    
+    //function dataBound(args) {
+    //    var column = args.model.columns[0];
+    //    this.columns(column, "update");
+    //    this.columns(column, "insert");
+    //}
+</script>
+

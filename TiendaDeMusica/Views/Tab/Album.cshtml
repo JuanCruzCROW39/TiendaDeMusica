@@ -1,0 +1,79 @@
+﻿@(Html.EJ().Grid<object>("AlbumGrid")
+              .Datasource(dataSource => dataSource.URL(Url.Action("DataAlbum", "Tab", null, Request.Url.Scheme))
+                        .UpdateURL(Url.Action("UpdateAlbum", "Tab", null, Request.Url.Scheme))
+                        .InsertURL(Url.Action("InsertAlbum", "Tab", null, Request.Url.Scheme))
+                        .RemoveURL(Url.Action("RemoveAlbum", "Tab", null, Request.Url.Scheme))
+                        .Adaptor(AdaptorType.UrlAdaptor))
+              .EditSettings(edit => { edit.AllowAdding().AllowDeleting().AllowEditing().RowPosition(RowPosition.Bottom).EditMode(EditMode.ExternalForm); })
+              .Locale("es-ES")
+              .ToolbarSettings(toolbar =>
+              {
+                  toolbar.ShowToolbar().ToolbarItems(item =>
+                  {
+                      item.AddTool(ToolBarItems.Add);
+                      item.AddTool(ToolBarItems.Cancel);
+                      item.AddTool(ToolBarItems.Delete);
+                      item.AddTool(ToolBarItems.Edit);
+                      item.AddTool(ToolBarItems.Update);
+                      item.AddTool(ToolBarItems.ExcelExport);
+                      item.AddTool(ToolBarItems.PdfExport);
+                      item.AddTool(ToolBarItems.WordExport);
+                  });
+              })
+              .Mappers(m => m.ExportToExcelAction("/Tab/ExportToExcelAlbum").ExportToPdfAction("/Tab/ExportToPdfAlbum").ExportToWordAction("/Tab/ExportToWordAlbum"))
+              .AllowPaging()
+              .AllowReordering()
+              .IsResponsive()
+              .PageSettings(p => { p.PageSize(10); })
+              .AllowResizeToFit()
+              .AllowSorting()
+              .Columns(columns =>
+              {
+                  columns.Field("AlbumId").HeaderText("Album ID").IsPrimaryKey(true).IsIdentity(true).Add();
+                  columns.Field("Titulo").ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'Campo obligatorio'}")).Add();
+                  columns.Field("ArtistaId").HeaderText("Artista")
+                    .ForeignKeyField("ArtistaId").ForeignKeyValue("Nombre").DataSource((IEnumerable<object>)ViewBag.DataSourceArtista)
+                    .ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'Campo obligatorio'}")).Add();
+                  columns.Field("GeneroId").HeaderText("Genero").ForeignKeyField("GeneroId")
+                    .ForeignKeyValue("Nombre").DataSource((IEnumerable<object>)ViewBag.DataSourceGenero)
+                    .ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'Campo obligatorio'}")).Add();
+                  columns.Field("Precio").Format("{0:C2}").EditType(EditingType.NumericEdit).ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'Campo obligatorio'}")).Add();
+                  columns.Field("AlbumArtURL").Add();
+              })
+              .ClientSideEvents(e => { e.ActionComplete("complete").ActionBegin("begin").EndEdit("endEdit").EndAdd("endAdd").ActionFailure("fail"); })
+)
+<script src="@Url.Content("~/Scripts/ej/i18n/ej.culture.es-ES.min.js")"></script>
+<script src="@Url.Content("~/Scripts/ej/l10n/ej.localetexts.es-ES.min.js")"></script>
+
+@(Html.EJ().ScriptManager())
+
+<script type="text/javascript">
+    function begin(args) {
+        if (args.requestType == "save") {
+            this.element.ejWaitingPopup("show");
+        }
+
+    }
+    function endEdit(args) {
+        this.element.ejWaitingPopup("hide");
+
+    }
+    function endAdd(args) {
+
+        this.element.ejWaitingPopup("hide");
+
+    }
+    function complete(args) {
+        if (args.requestType == "cancel")
+            this.element.ejWaitingPopup("hide");
+        if (args.requestType == "save")
+            this.refreshContent();
+    }
+
+    function fail(args) {
+        this.cancelEdit();
+        alert("Servicio no disponible");
+    }
+
+</script>
+

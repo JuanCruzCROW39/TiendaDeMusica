@@ -1,0 +1,53 @@
+﻿
+@{
+    ViewBag.Title = "Gauge";
+}
+
+<h2>Gauge</h2>
+
+<div align="center">
+    @(Html.EJ().CircularGauge("Test")
+        .IsResponsive(true)
+        .BackgroundColor("transparent")
+        .Scales(scales=>
+        {
+            scales.Radius(130)
+            .PointerCap(p => p.Radius(10))
+            .Minimum(0)
+            .Maximum(100)
+            .MajorIntervalValue(10)
+            .MinorIntervalValue(1)
+            .ShowScaleBar()
+            .Labels(lbl => { lbl.UnitText(" %").Add(); })
+            .Size(1)
+            .ShowRanges()
+            .Ranges(ranges =>
+            {
+                ranges.Size(5).DistanceFromScale(-30).StartValue(0).EndValue(33).BackgroundColor(ConsoleColor.Red.ToString()).Border(b=>b.Color(ConsoleColor.Red.ToString())).Add();
+                ranges.Size(5).DistanceFromScale(-30).StartValue(33).EndValue(66).BackgroundColor(ConsoleColor.Yellow.ToString()).Border(b => b.Color(ConsoleColor.Yellow.ToString())).Add();
+                ranges.Size(5).DistanceFromScale(-30).StartValue(66).EndValue(100).BackgroundColor(ConsoleColor.Green.ToString()).Border(b => b.Color(ConsoleColor.Green.ToString())).Add();
+            })
+            .Pointers(p =>
+            {
+                p.Value(70)
+                .Length(90)
+                .Width(9)
+                .Add();
+            }).Add();
+        })
+        .Radius(140)
+        .Height(360)
+        .Width(500)
+        .ClientSideEvents(c => c.Load("loadGaugeTheme"))
+    )
+</div>
+<div align="center">
+    <h5>% de avance</h5>
+</div>
+<button onclick="lol()" type="button">click</button>
+<script type="text/javascript">
+    function lol(e) {
+        var obj = $("#Test").data("ejCircularGauge");
+        console.log(obj);
+    }
+</script>

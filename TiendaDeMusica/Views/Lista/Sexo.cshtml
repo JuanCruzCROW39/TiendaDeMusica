@@ -1,0 +1,25 @@
+﻿@using TiendaDeMusica.Models
+@model IEnumerable<Sexo>
+
+@{
+    ViewBag.Title = "Sexo";
+}
+
+<h2>Sexo</h2>
+@(Html.EJ().Grid<Sexo>("GridSexo")
+    //.Datasource(Model)
+    .Datasource("http://js.syncfusion.com/demos/ejServices/Wcf/Northwind.svc/Orders")
+    .AllowPaging()
+    .AllowResizeToFit()
+    .AllowSorting()
+    .Columns(c =>
+    {
+        //c.Field(model => model.SexoId).HeaderText("ID").Add();
+        //c.Field(model => model.Nombre).Add();
+        c.Field("OrderID").HeaderText("OrderID").TextAlign(TextAlign.Right).Width(75).Add();
+        c.Field("ShipCity").HeaderText("ShipCity").Width(100).Add();
+        c.Field("Freight").Width(120).Add();
+        c.Field("ShipName").Width(100).Add();
+        c.Field("EmployeeID").Add();
+    })
+    )

@@ -1,0 +1,20 @@
+﻿@using TiendaDeMusica.Models
+@model IEnumerable<EstadoCivil>
+
+@{
+    ViewBag.Title = "EstadoCivil";
+}
+
+<h2>EstadoCivil</h2>
+@(Html.EJ().Grid<EstadoCivil>("GridEstadoCivil")
+    .Datasource(Model)
+    .AllowResizeToFit()
+    .AllowPaging()
+    .AllowSorting()
+    .Columns(c=>
+    {
+        c.Field(model => model.EstadoCivilId).HeaderText("ID").Add();
+        c.Field(model => model.Nombre).Add();
+    }
+    )
+    )

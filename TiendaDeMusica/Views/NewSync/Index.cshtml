@@ -1,0 +1,60 @@
+﻿@using TiendaDeMusica.Controllers
+@model IEnumerable<AlbumModel>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Test</h2>
+
+@(Html.EJ().Grid<AlbumModel>("FlatGrid")
+    .Datasource(data => data.Json(Model).InsertURL("/NewSync/Create").UpdateURL("/NewSync/Update").RemoveURL("/NewSync/Delete").Adaptor(AdaptorType.RemoteSaveAdaptor))
+    .EditSettings(edit => { edit.AllowAdding().AllowDeleting().AllowEditing(); })
+    .ToolbarSettings(t =>
+    {
+        t.ShowToolbar().ToolbarItems(i =>
+        {
+            i.AddTool(ToolBarItems.Add);
+            i.AddTool(ToolBarItems.Cancel);
+            i.AddTool(ToolBarItems.Delete);
+            i.AddTool(ToolBarItems.Edit);
+            i.AddTool(ToolBarItems.Update);
+        });
+    })
+    .AllowSorting()
+    .AllowPaging()
+    
+    .Columns(c=>
+    {
+        c.Field(m => m.ID).IsPrimaryKey(true).Add();
+        c.Field(m => m.Titulo).Add();
+        c.Field(m => m.ArtistaId).Add();
+        c.Field(m => m.Artista).Add();
+        c.Field(m => m.GeneroId).Add();
+        c.Field(m => m.Genero).Add();
+        c.Field(m => m.Precio).Format("{0:C2}").Add();
+    })
+    .ClientSideEvents(e => { e.ActionComplete("complete").ActionBegin("begin").EndEdit("endEdit").EndAdd("endAdd").DataBound("dataBound"); })
+    )
+<script type="text/javascript">
+        function begin(args) {
+        if(args.requestType=="save")
+            this.element.ejWaitingPopup("show");
+        }
+        function endEdit(args) {
+            this.element.ejWaitingPopup("hide");
+        }
+    function endAdd(args) {
+            
+            this.element.ejWaitingPopup("hide");
+        }
+    function complete(args) {
+            if (args.requestType == "cancel")
+                this.element.ejWaitingPopup("hide");
+        }
+    //function dataBound(args) {
+    //    var column = args.model.columns[0];
+    //    this.columns(column, "update");
+    //    this.columns(column, "insert");
+    //}
+</script>
+

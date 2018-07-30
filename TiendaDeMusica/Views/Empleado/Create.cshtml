@@ -1,0 +1,302 @@
+﻿@using TiendaDeMusica.Models
+@model TiendaDeMusica.Models.Empleado
+
+@{
+    ViewBag.Title = "Create";
+}
+<br />
+<div class="text-left text-info">
+    <h2>Create Empleado</h2>
+</div>
+<br />
+<br />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+<div class="container body-content">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="row">
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.Nombre, "Nombre", new { @class = "alignleft" })
+        </div>
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.Apellidos, "Apellidos", new { @class = "alignleft" })
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control col-md-12" })
+            @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-6">
+            @Html.TextBoxFor(model => model.Apellidos, new { @class = "form-control col-md-12" })
+            @Html.ValidationMessageFor(model => model.Apellidos, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <br />
+    <br />
+
+    <div class="row">
+        <div class="col-md-1">
+            @Html.LabelFor(model => model.Edad, "Edad", new { @class = "alignleft" })
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.FechaDeNacimiento, "Fecha de nacimiento", new { @class = "control-label alignleft" })
+        </div>
+        <div class="col-md-2">
+            @Html.LabelFor(model => model.SexoId, "Sexo", new { @class = "control-label alignleft" })
+        </div>
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.Direccion, "Direccion", new { @class = "control-label alignleft" })
+        </div>
+        @**@
+    </div>
+    <div class="row">
+        <div class="col-md-1">
+            @Html.EJ().NumericTextBoxFor(model => model.Edad@*, new { @class = "form-control" }*@).WatermarkText("Años").MinValue(18).MaxValue(90).ShowRoundedCorner().Height("38px").Width("75px")
+            @Html.ValidationMessageFor(model => model.Edad, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-3">
+            @Html.EJ().DatePickerFor(model => model.FechaDeNacimiento).DateFormat("dddd, MMMM dd, yyyy").ShowRoundedCorner().Height("38px").Width("230px").Locale("es-ES")
+            @Html.ValidationMessageFor(model => model.FechaDeNacimiento, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-2">
+            @Html.EJ().DropDownListFor(model => model.SexoId).Datasource((IEnumerable<Sexo>)ViewBag.Sexo).DropDownListFields(df => df.ID("SexoId").Text("Nombre").Value("SexoId")).WatermarkText("Seleccione...").ShowRoundedCorner().Height("38px")
+            @Html.ValidationMessageFor(model => model.SexoId, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-6">
+            @Html.TextBoxFor(model => model.Direccion, new { @class = "form-control col-md-12" })
+            @Html.ValidationMessageFor(model => model.Direccion, "", new { @class = "text-danger" })
+        </div>
+        @**@
+    </div>
+
+    <br />
+    <br />
+
+    <div class="row">
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.CURP, "CURP", new { @class = "control-label alignleft" })
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.RFC, "RFC", new { @class = "control-label alignleft" })
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.Email, "Correo Electronico", new { @class = "control-label alignleft" })
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.DepartamentoId, "Departamento", new { @class = "control-label alignleft" })
+        </div>
+        @**@
+        @*<div class="col-md-4">
+                @Html.LabelFor(model => model.Externo, "Externo", new { @class = "control-label alignleft" })
+            </div>*@
+
+
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            @Html.TextBoxFor(model => model.CURP, "CURP", new { @class = "form-control col-md-12" })
+            @Html.ValidationMessageFor(model => model.CURP, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-3">
+            @Html.TextBoxFor(model => model.RFC, "RFC", new { @class = "form-control col-md-12" })
+            @Html.ValidationMessageFor(model => model.RFC, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-3">
+            @Html.TextBoxFor(model => model.Email, new { @class = "form-control col-md-12" })
+            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-3">
+            @Html.EJ().DropDownListFor(model => model.DepartamentoId).Datasource((IEnumerable<Departamento>)ViewBag.Departamentos).DropDownListFields(df => df.ID("DepartamentoId").Text("Nombre").Value("DepartamentoId")).WatermarkText("Seleccione...").ShowRoundedCorner().Height("34px").Width("200px")
+            @Html.ValidationMessageFor(model => model.DepartamentoId, "", new { @class = "text-danger" })
+        </div>
+
+        @*<div class="col-md-4">
+
+                @Html.CheckBoxFor(model => model.Externo, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Externo, "", new { @class = "text-danger" })
+            </div>*@
+
+    </div>
+
+    <br />
+    <br />
+
+    <div class="row">
+        <div class="col-md-2">
+            @Html.LabelFor(model => model.Telefono, "Telefono", new { @class = "control-label alignleft" })
+        </div>
+        <div class="col-md-2">
+            @Html.LabelFor(model => model.EstadoCivilId, "Estado Civil", new { @class = "control-label alignleft" })
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            @Html.EJ().MaskEditTextBoxFor(model => model.Telefono).MaskFormat("(999) 999-99-99").WatermarkText("Ingrese...").Height("34px").ShowRoundedCorner()
+            @Html.ValidationMessageFor(model => model.Telefono, "", new { @class = "text-danger" })
+        </div>
+        <div class="col-md-2">
+            @Html.EJ().DropDownListFor(model => model.EstadoCivilId).Datasource((IEnumerable<EstadoCivil>)ViewBag.EstadoCivil).DropDownListFields(df => df.ID("EstadopCivilId").Text("Nombre").Value("EstadoCivilId")).WatermarkText("Seleccione...").ShowRoundedCorner().Height("38px")
+            @Html.ValidationMessageFor(model => model.EstadoCivilId, "", new { @class = "text-danger" })
+        </div>
+        
+    </div>
+
+    <br />
+    <br />
+
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label class="col-sm-2"></label>
+            <div class="col-sm-10">
+                <div class="custom-checkbox">
+                    @Html.CheckBoxFor(model => model.Externo)
+                    @Html.LabelFor(model => model.Externo, "¿Es externo?", null)
+                    @Html.ValidationMessageFor(model => model.Externo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        @*<div class="form-group col-md-6">
+            <div class="custom-checkbox">
+                @Html.EJ().CheckBox("Externo").Size(Size.Medium).ShowRoundedCorner().Value("Externo")
+                @Html.LabelFor(model=>model.Externo, "¿Es externo?",new { @for="Externo"})
+                @Html.ValidationMessageFor(model=>model.Externo, "", new { @class="text-danger"})
+            </div>
+        </div>*@
+    </div>
+
+    <br />
+    <br />
+    <div class="form-group">
+        @Html.EJ().Button("btnCrear").Type(ButtonType.Submit).CssClass("btn-success").Text("Guardar cambios")
+    </div>
+</div>
+}
+@*
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Nombre, "Nombre", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Apellidos, "Apellidos", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Apellidos, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Apellidos, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Edad, "Edad", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EJ().NumericTextBoxFor(model => model.Edad, new { @class = "form-control" }).WatermarkText("Años").MinValue(18).MaxValue(90)
+                @Html.ValidationMessageFor(model => model.Edad, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Direccion, "Direccion", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Direccion, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Direccion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model=>model.Email, "Correo Electronico", new { @class="control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.TextBoxFor(model=>model.Email, new { @class="form-control"})
+                @Html.ValidationMessageFor(model=>model.Email, "", new { @class="text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DepartamentoId, "Departamento", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EJ().DropDownListFor(model => model.DepartamentoId).Datasource((IEnumerable<Departamento>)ViewBag.Departamentos).DropDownListFields(df => df.ID("DepartamentoId").Text("Nombre").Value("DepartamentoId")).WatermarkText("Seleccione...")
+                @Html.ValidationMessageFor(model => model.DepartamentoId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Externo, "Externo", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.CheckBoxFor(model=>model.Externo, new { @class="form-control checkbox"})
+                @Html.EJ().CheckBoxFor(model=>model.Externo).Size(Size.Medium)
+                @Html.ValidationMessageFor(model => model.Externo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model=>model.CURP, "CURP", new { @class="control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.TextBoxFor(model=>model.CURP, "CURP", new { @class="form-control"})
+                @Html.ValidationMessageFor(model=>model.CURP, "", new { @class="text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model=>model.RFC, "RFC", new { @class="control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.TextBoxFor(model=>model.RFC, "RFC", new { @class="form-control"})
+                @Html.ValidationMessageFor(model=>model.RFC, "", new { @class="text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model=>model.Telefono, "Telefono", new { @class="control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EJ().MaskEditTextBoxFor(model=>model.Telefono).MaskFormat("(999) 999-99-99").WatermarkText("Ingrese...")
+                @Html.ValidationMessageFor(model=>model.Telefono, "", new { @class="text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model=>model.FechaDeNacimiento, "Fecha de nacimiento", new { @class="control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EJ().DateTimePickerFor(model=>model.FechaDeNacimiento).Value(DateTime.Now.ToString()).Width("175px").DateTimeFormat("dddd, MMMM dd, yyyy")
+                @Html.ValidationMessageFor(model=>model.FechaDeNacimiento, "", new { @class="text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model=>model.SexoId, "Sexo", new { @class="control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EJ().DropDownListFor(model => model.SexoId).Datasource((IEnumerable<Sexo>) ViewBag.Sexo).DropDownListFields(df => df.ID("SexoId").Text("Nombre").Value("SexoId")).WatermarkText("Seleccione...")
+                @Html.ValidationMessageFor(model=>model.SexoId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model=>model.EstadoCivilId, "Estado Civil", new { @class="control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EJ().DropDownListFor(model=>model.EstadoCivilId).Datasource((IEnumerable<EstadoCivil>)ViewBag.EstadoCivil).DropDownListFields(df => df.ID("EstadopCivilId").Text("Nombre").Value("EstadoCivilId")).WatermarkText("Seleccione...")
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.EJ().Button("btnCrear").Type(ButtonType.Submit).CssClass("btn-success").Text("Guardar cambios")
+        </div>
+    </div>
+    }
+*@
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

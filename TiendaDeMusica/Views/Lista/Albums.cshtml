@@ -1,0 +1,38 @@
+﻿@using TiendaDeMusica.Models
+@model IEnumerable<Album>
+
+@{
+    ViewBag.Title = "Albums";
+}
+
+<h2>Albums</h2>
+
+@(Html.EJ().Grid<Album>("GridAlbum")
+    .Datasource(Model)
+    .AllowPaging()
+    .PageSettings(p=>p.PageSize(10))
+    .AllowResizeToFit()
+    .AllowSorting()
+
+    .Columns(column=>
+    {
+        column.Field(model => model.AlbumId).HeaderText("ID").Add();
+        column.Field(model => model.Titulo).Add();
+        column.Field(model => model.ArtistaId).HeaderText("Artista").ForeignKeyField("ArtistaId").ForeignKeyValue("Nombre").DataSource((IEnumerable<Artista>)ViewBag.Artistas).Add();
+        column.Field(model => model.GeneroId).HeaderText("Genero").ForeignKeyField("GeneroId").ForeignKeyValue("Nombre").DataSource((IEnumerable<Genero>)ViewBag.Generos).Add();
+        column.Field(model => model.Precio).Format("{0:C2}").Add();
+    })
+    .ChildGrid(child=>
+    {
+        child.Datasource((IEnumerable<Cancion>)ViewBag.Canciones)
+        .QueryString("AlbumId")
+        .AllowPaging()
+        .PageSettings(p => p.PageSize(10))
+        //.CssClass("flat-saffron")
+        .Columns(col =>
+        {
+            col.Field("NoPista").HeaderText("No. de pista").Add();
+            col.Field("Nombre").Add();
+        });
+    })
+    )

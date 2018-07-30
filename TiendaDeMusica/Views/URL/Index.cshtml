@@ -1,0 +1,75 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Prueba de URL adaptador</h2>
+
+@(Html.EJ().Grid<object>("FlatGrid")
+        .Datasource(dataSource => dataSource.URL(Url.Action("DataSource", "URL", null, Request.Url.Scheme))
+            .UpdateURL(Url.Action("Update", "URL", null, Request.Url.Scheme))
+            .InsertURL(Url.Action("Insert", "URL", null, Request.Url.Scheme))
+            .RemoveURL(Url.Action("Remove", "URL", null, Request.Url.Scheme))
+            .Adaptor(AdaptorType.UrlAdaptor))
+        .EditSettings(edit => { edit.AllowAdding().AllowDeleting().AllowEditing().RowPosition(RowPosition.Bottom).EditMode(EditMode.ExternalForm); })
+        .Locale("es-MX")
+        .ToolbarSettings(toolbar =>
+        {
+            toolbar.ShowToolbar().ToolbarItems(item =>
+            {
+                item.AddTool(ToolBarItems.Add);
+                item.AddTool(ToolBarItems.Cancel);
+                item.AddTool(ToolBarItems.Delete);
+                item.AddTool(ToolBarItems.Edit);
+                item.AddTool(ToolBarItems.Update);
+                item.AddTool(ToolBarItems.Search);
+            });
+        })
+        .AllowSearching()
+        
+    .AllowPaging()
+    .AllowReordering()
+    .IsResponsive()
+    .PageSettings(p => { p.PageSize(5); })
+    .AllowResizeToFit()
+    .AllowSorting()
+    .Columns(columns=>
+    {
+        columns.Field("AlbumId").HeaderText("Album ID").IsPrimaryKey(true).IsIdentity(true).Add();
+        columns.Field("Titulo").ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'requeridos'}")).Add();
+        columns.Field("ArtistaId").HeaderText("Artista").ForeignKeyField("ArtistaId").ForeignKeyValue("Nombre").DataSource((IEnumerable<object>)ViewBag.DataSourceArtista)/*.ValidationRules(v => v.AddRule("required", true))*/.Add();
+        columns.Field("GeneroId").HeaderText("Genero").ForeignKeyField("GeneroId").ForeignKeyValue("Nombre").DataSource((IEnumerable<object>)ViewBag.DataSourceGenero).ValidationRules(v => v.AddRule("required", true)).Add();
+        columns.Field("Precio").Format("{0:C2}").EditType(EditingType.NumericEdit).ValidationRules(v => v.AddRule("required", true)).Add();
+        columns.Field("AlbumArtURL").ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'requeridos'}")).Add();
+    })
+    .ClientSideEvents(e => { e.ActionComplete("complete").ActionBegin("begin").EndEdit("endEdit").EndAdd("endAdd").ActionFailure("fail"); })
+    )
+
+<script type="text/javascript">
+        function begin(args) {
+        if(args.requestType=="save")
+            this.element.ejWaitingPopup("show");
+        }
+        function endEdit(args) {
+            this.element.ejWaitingPopup("hide");
+            
+        }
+    function endAdd(args) {
+
+        this.element.ejWaitingPopup("hide");
+        
+        }
+    function complete(args) {
+            if (args.requestType == "cancel")
+                this.element.ejWaitingPopup("hide");
+        if (args.requestType == "save")
+            this.refreshContent(); 
+    }
+
+    //function fail(args) {
+    //    this.cancelEdit();
+    //    alert("Servicio no disponible");
+    //}
+</script>
+
+

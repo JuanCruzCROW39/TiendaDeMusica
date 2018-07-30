@@ -1,0 +1,110 @@
+﻿@using TiendaDeMusica.Models
+@model IEnumerable<Album>
+
+@{
+    ViewBag.Title = "Albums";
+}
+
+<h2>Albums</h2>
+
+@(Html.EJ().Grid<Album>("GridAlbum")
+        .Datasource(Model)
+        .AllowFiltering()
+        .FilterSettings(f => { f.FilterType(FilterType.Excel); })
+        .AllowPaging()
+        .PageSettings(p => { p.PageSize(10); })
+        .AllowResizeToFit()
+        .Locale("es-MX")
+        .EditSettings(e =>
+        {
+            e.AllowAdding().AllowDeleting().AllowEditing().EditMode(EditMode.Dialog).RowPosition(RowPosition.Bottom).ShowDeleteConfirmDialog();
+        })
+        .ToolbarSettings(t=>
+        {
+            t.ShowToolbar().ToolbarItems(i =>
+            {
+                i.AddTool(ToolBarItems.Add);
+                i.AddTool(ToolBarItems.Cancel);
+                i.AddTool(ToolBarItems.Delete);
+                i.AddTool(ToolBarItems.Edit);
+                i.AddTool(ToolBarItems.Update);
+            });
+        })
+        .Columns(c=>
+        {
+            c.Field(m => m.AlbumId).HeaderText("ID").IsIdentity(true).IsPrimaryKey(true).Add();
+            c.Field(m => m.Titulo).ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'Ingrese el titulo del album'}")).Add();
+            c.Field(m => m.ArtistaId).HeaderText("Artista").ForeignKeyField("ArtistaId").ForeignKeyValue("Nombre").DataSource((IEnumerable<Artista>)ViewBag.Artistas)
+                .ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'Seleccione un Artista'}")).Add();
+            c.Field(m => m.GeneroId).HeaderText("Genero").ForeignKeyField("GeneroId").ForeignKeyValue("Nombre").DataSource((IEnumerable<Genero>)ViewBag.Generos)
+                .ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'Seleccione un Genero'}")).Add();
+            c.Field(m => m.Precio).Format("{0:C2}").EditType(EditingType.NumericEdit)
+                .ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'Ingrese el precio'}")
+                    .AddRule("range", "[0,1500]").AddRule("messages", "{range:'Ingrese un precio valido(0 a 1500)'}")).Add();
+        })
+        .ClientSideEvents(e => { e.ActionComplete("complete").ActionBegin("begin").EndAdd("endAdd").EndEdit("endEdit").EndDelete("endDelete"); })
+
+
+        )
+<script type="text/javascript">
+    function complete(args) {
+        if (args.requestType == "cancel") {
+            this.element.ejWaitingPopup("hide");
+        }
+        if (args.requestType == "save") {
+            this.refreshContent();
+        }            
+    }
+    function begin(args) {
+        if (args.requestType == "save") {
+            this.element.ejWaitingPopup("show");
+        }
+    }
+    function endAdd(args) {
+        $.ajax({
+            type: "post",
+            url: "/Mapa/Create",
+            data: { album: JSON.stringify(args.rowData) },
+            dataType: "json",
+            success: function (data) {
+                var grid = $("#GridAlbum").data("ejGrid");
+                grid.dataSource(data);
+            },
+            error: function (xhr, status) {
+                console.log("Ups...");
+            }
+        });
+        this.element.ejWaitingPopup("hide");
+    }
+    function endEdit(args) {
+        $.ajax({
+            type: "post",
+            url: "/Mapa/Update",
+            data: { album: JSON.stringify(args.rowData) },
+            dataType: "json",
+            success: function (data) {
+                var grid = $("#GridAlbum").data("ejGrid");
+                grid.dataSource(data);
+            },
+            error: function (xhr, status) {
+                console.log("Ups...");
+            }
+        })
+        this.element.ejWaitingPopup("hide");
+    }
+    function endDelete(args) {
+        $.ajax({
+            type: "post",
+            url: "/Mapa/Delete",
+            data: { key: args.rowData.AlbumId },
+            dataType: "json",
+            success: function (data) {
+                var grid = $("#GridAlbum").data("ejGrid");
+                grid.dataSource(data);
+            },
+            error: function (xhr, status) {
+                console.log("Ups...");
+            }
+        })
+    }
+</script>

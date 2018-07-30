@@ -1,0 +1,170 @@
+﻿@using TiendaDeMusica.Models
+@model IEnumerable<Hospitales>
+@{
+    ViewBag.Title = "Split";
+}
+
+<h2>Split</h2>
+
+@{Html.EJ().Splitter("info")
+            .Height("700")
+            .Width("100%")
+            .Orientation(Orientation.Horizontal)
+            .EnableAutoResize().PaneProperties(
+            p =>
+            {
+                p.Add().ContentTemplate(
+                    @<div>
+                        @(Html.EJ().TreeView("TVLista")
+                            .TreeViewFields(s => s.Datasource(Model).Id("Id").ParentId("PId").Text("Nombre").HasChild("Child").Expanded("Expanded"))
+                            .LoadOnDemand()
+                            .ShowCheckbox()
+                            .AutoCheck()
+                            .ClientSideEvents(e => { e.NodeCheck("nodeCheck").NodeUncheck("nodeUncheck").Ready("ready"); })
+                        )
+                    </div>
+                ).PaneSize("20%");
+                p.Add().ContentTemplate(
+                    @<div id="map" style="min-height:100%;width:100%;">
+
+                    </div>
+                );
+            }).Render();
+}
+<script type="text/javascript">
+    //function nodeCheck(args) {
+    //    var tree = $("#TVLista").data("ejTreeView");
+    //    tree.getCheckedNodesIndex(); 
+    //    //console.log(tree);
+    //    //var node = tree.getCheckedNodesIndex();
+    //    //console.log(args);
+    //    //alert(args);
+    //    var div = window.mapa;
+    //    console.log(div);
+    //}
+    function nodeCheck(args) {
+        //console.log(args);
+        if (args.parentId == "") {
+            console.log("Es padre");
+            var nodeChild = window.dataSource.filter(function (element) {
+                return args.id == element.PId;
+            });
+            //console.log(nodeChild);
+            for (var i = 0; i < nodeChild.length; i++) {
+                var markerSearch = window.markers.find(function (element) {
+                    return nodeChild[i].Nombre == element.title;
+                });
+                markerSearch.setMap(window.mapa);
+            }
+        }
+        else {
+            console.log("Es hijo");
+            var markerSearch = window.markers.find(function (element) {
+                return args.value == element.title;
+            });
+            markerSearch.setMap(window.mapa);
+        }
+    }
+    function nodeUncheck(args) {
+        if (args.parentId == "") {
+            var nodeChild = window.dataSource.filter(function (element) {
+                return args.id == element.PId;
+            });
+            for (var i = 0; i < nodeChild.length; i++) {
+                var markerSearch = window.markers.find(function (element) {
+                    return nodeChild[i].Nombre == element.title;
+                });
+                markerSearch.setMap(null);
+            }
+        }
+        else {
+            var markerSearch = window.markers.find(function (element) {
+                return args.value == element.title;
+            });
+            markerSearch.setMap(null);
+        }
+    }
+    //Esta funcion es para ver que datos obtengo y verlos en la consola (navegador) [Estas son pruebas previas]
+    //function ready(args) {
+    //    var tree = $("#TVLista").data("ejTreeView");
+    //    var dataSource = tree._newDataSource;
+    //    console.log(dataSource);
+    //    $.ajax({
+    //        url: "/Mapa/Coordenadas",
+    //        dataType:"json",
+    //        success: function (data) {
+    //            console.log(data);
+    //            for (var i = 0; i < dataSource.length; i++) {
+    //                if (dataSource[i].Child == true) {
+    //                    console.log("Nodo padre " + dataSource[i].Nombre);
+    //                }
+    //                else {
+    //                    var infoMarker = data.find(function (element) {
+    //                        return dataSource[i].Id == element.HospitalId;
+    //                    });
+    //                    console.log(infoMarker);
+    //                }
+    //            }                
+    //        },
+    //        error: function (xhr, status) {
+    //            console.log("Ups...");
+    //        },
+    //        complete: function (xhr, status) {
+    //            console.log("Mision complete!")
+    //        }
+    //    });
+    //}
+
+    function ready(args) {
+        $.ajax({
+            url: "/Mapa/Coordenadas",
+            dataType: "json",
+            success: function (data) {
+                var tree = $("#TVLista").data("ejTreeView");
+                window.dataSource = tree._newDataSource;
+                window.markers = [];
+                var urlIcon = "";
+                //var label = "";
+                //var j = 0;
+                for (var i = 0; i < window.dataSource.length; i++) {
+                    if (window.dataSource[i].Child != true) {
+                        var infoMaker = data.find(function (element) {
+                            return window.dataSource[i].Id == element.HospitalId;
+                        })
+                        var marker = new google.maps.Marker({
+                            position: { lat: infoMaker.Latitud, lng: infoMaker.Longitud },
+                            title: window.dataSource[i].Nombre,
+                            icon: "/Content/Pins/" + urlIcon + ".png"
+                            //label: label
+                        });
+                        window.markers.push(marker);
+                    }
+                    else {
+                        //j++;
+                        urlIcon = window.dataSource[i].Nombre;
+                        //label = "J" + j;
+                    }
+                }
+            }
+        })
+    }
+
+</script>
+
+<script>
+    var mapa;
+    function myMap() {
+        window.mapa = new google.maps.Map(document.getElementById("map"), {
+            center: { lat: 18.66, lng: -98.40 },
+            zoom: 8
+        });
+
+        //var marker = new google.maps.Marker({
+        //    position: { lat: 18.66, lng: -98.40 },
+        //    map: window.mapa,
+        //    title: "hola!"
+        //});
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCoiI3m1hvkEcATGxOKsX9zmtaLOssIdCw&callback=myMap"></script>
+

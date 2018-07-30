@@ -1,0 +1,70 @@
+﻿@(Html.EJ().Grid<object>("ArtistaGrid")
+            .Datasource(datasource => datasource.URL(Url.Action("DataArtista", "Tab", null, Request.Url.Scheme))
+                .InsertURL(Url.Action("InsertArtista", "Tab", null, Request.Url.Scheme))
+                .UpdateURL(Url.Action("UpdateArtista", "Tab", null, Request.Url.Scheme))
+                .RemoveURL(Url.Action("RemoveArtista", "Tab", null, Request.Url.Scheme))
+                .Adaptor(AdaptorType.UrlAdaptor))
+            .EditSettings(edit => { edit.AllowAdding().AllowDeleting().AllowEditing().RowPosition(RowPosition.Bottom).EditMode(EditMode.ExternalForm); })
+            .ToolbarSettings(toolbar =>
+            {
+                toolbar.ShowToolbar().ToolbarItems(item =>
+                {
+                    item.AddTool(ToolBarItems.Add);
+                    item.AddTool(ToolBarItems.Cancel);
+                    item.AddTool(ToolBarItems.Delete);
+                    item.AddTool(ToolBarItems.Edit);
+                    item.AddTool(ToolBarItems.Update);
+                    item.AddTool(ToolBarItems.ExcelExport);
+                    item.AddTool(ToolBarItems.PdfExport);
+                    item.AddTool(ToolBarItems.WordExport);
+                });
+            })
+            .Mappers(m => m.ExportToExcelAction("/Tab/ExportToExcelArtista").ExportToPdfAction("/Tab/ExportToPdfArtista").ExportToWordAction("/Tab/ExportToWordArtista"))
+            .AllowPaging()
+            .AllowReordering()
+            .Locale("es-ES")
+            .IsResponsive()
+            .PageSettings(p => { p.PageSize(10); })
+            .AllowResizeToFit()
+            .AllowSorting()
+            .Columns(c =>
+            {
+                c.Field("ArtistaId").HeaderText("Artista ID").IsPrimaryKey(true).IsIdentity(true).Add();
+                c.Field("Nombre").ValidationRules(v => v.AddRule("required", true).AddRule("messages", "{required:'Campo Obligatorio'}")).Add();
+            })
+            .ClientSideEvents(e => { e.ActionComplete("complete").ActionBegin("begin").EndEdit("endEdit").EndAdd("endAdd").ActionFailure("fail"); })
+)
+
+@(Html.EJ().ScriptManager())
+
+<script type="text/javascript">
+    function begin(args) {
+        if (args.requestType == "save")
+            this.element.ejWaitingPopup("show");
+    }
+    function endEdit(args) {
+        this.element.ejWaitingPopup("hide");
+
+    }
+    function endAdd(args) {
+
+        this.element.ejWaitingPopup("hide");
+
+    }
+    function complete(args) {
+        if (args.requestType == "cancel")
+            this.element.ejWaitingPopup("hide");
+        if (args.requestType == "save") {
+            this.refreshContent();
+            //var grid = $("#AlbumGrid").data("ejGrid");
+            //grid.refreshContent(true);
+            //alert("hi");
+        }
+
+    }
+
+    //function fail(args) {
+    //    this.cancelEdit();
+    //    alert("Servicio no disponible");
+    //}
+</script>
